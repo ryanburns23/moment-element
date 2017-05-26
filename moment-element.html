@@ -4,7 +4,7 @@ Copyright (c) 2016 Abdón Rodríguez Davila (@abdonrd). All rights reserved.
 This code may only be used under the MIT style license found at https://abdonrd.github.io/LICENSE.txt
 -->
 
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="moment-import.html">
 
 <!--
@@ -24,79 +24,84 @@ Examples:
   </template>
 
   <script>
-    Polymer({
-      is: 'moment-element',
+    class MomentElement extends Polymer.Element {
 
-      properties: {
-        /**
-         * The input datetime. If don't set the datetime, the datetime will be now.
-         * For consistent results, parsing anything other than ISO 8601 strings
-         * with the `inputFormat` property. More information in [moment String](http://momentjs.com/docs/#/parsing/string/).
-         */
-        datetime: {
-          type: String,
-          value: function() {
-            return new Date();
+      static get is() { return 'moment-element'; }
+
+      static get properties() {
+        return {
+          /**
+           * The input datetime. If don't set the datetime, the datetime will be now.
+           * For consistent results, parsing anything other than ISO 8601 strings
+           * with the `inputFormat` property. More information in [moment String](http://momentjs.com/docs/#/parsing/string/).
+           */
+          datetime: {
+            type: String,
+            value: function() {
+              return new Date();
+            }
+          },
+
+          /**
+           * The datetime input format. An string using the
+           * [moment String + Format](http://momentjs.com/docs/#/parsing/string-format/).
+           */
+          inputFormat: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * The datetime output format. Options are 'now' or datetime using the
+           * [moment Format](http://momentjs.com/docs/#/displaying/format/).
+           */
+          outputFormat: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * Relative time using [momen time from now](http://momentjs.com/docs/#/displaying/fromnow/)
+           * or [momen Time from datetime](http://momentjs.com/docs/#/displaying/from/).
+           */
+          from: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * Relative time using [momen Time to now](http://momentjs.com/docs/#/displaying/tonow/)
+           * or [momen Time to datetime](http://momentjs.com/docs/#/displaying/to/).
+           */
+          to: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * The output datetime.
+           */
+          output: {
+            type: String,
+            notify: true
           }
-        },
-
-        /**
-         * The datetime input format. An string using the
-         * [moment String + Format](http://momentjs.com/docs/#/parsing/string-format/).
-         */
-        inputFormat: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * The datetime output format. Options are 'now' or datetime using the
-         * [moment Format](http://momentjs.com/docs/#/displaying/format/).
-         */
-        outputFormat: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * Relative time using [momen time from now](http://momentjs.com/docs/#/displaying/fromnow/)
-         * or [momen Time from datetime](http://momentjs.com/docs/#/displaying/from/).
-         */
-        from: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * Relative time using [momen Time to now](http://momentjs.com/docs/#/displaying/tonow/)
-         * or [momen Time to datetime](http://momentjs.com/docs/#/displaying/to/).
-         */
-        to: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * The output datetime.
-         */
-        output: {
-          type: String,
-          notify: true
         }
-      },
+      }
 
-      observers: [
-        '_computeOutput(datetime, inputFormat, outputFormat, from, to)'
-      ],
+      static get observers() {
+        return [
+          '_computeOutput(datetime, inputFormat, outputFormat, from, to)'
+        ]
+      }
 
       /**
        * Recomputes the output
        */
-      update: function() {
+      update() {
         this._computeOutput(this.datetime, this.inputFormat, this.outputFormat, this.from, this.to);
-      },
+      }
 
-      _computeOutput: function(datetime, inputFormat, outputFormat, from, to) {
+      _computeOutput(datetime, inputFormat, outputFormat, from, to) {
         var output = inputFormat ? moment(datetime, inputFormat) : moment(datetime);
 
         if (outputFormat) {
@@ -109,6 +114,9 @@ Examples:
 
         this.set('output', output);
       }
-    });
+
+    }
+
+    customElements.define('moment-element', MomentElement);
   </script>
 </dom-module>
